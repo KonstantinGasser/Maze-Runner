@@ -10,7 +10,7 @@ class Node():
         self.neighours = []
         self.walls     = [True, True, True, True] #top , right, bottom, left
 
-    def get_neighbours(self, grid) -> List[Node]:
+    def get_neighbours(self, grid) -> List[object]:
 
         top_index = self.index(self.i, self.j - 1)
         top = None
@@ -26,7 +26,7 @@ class Node():
         bottom = None
         if bottom_index != -1:
             bottom = grid[bottom_index[0]][bottom_index[1]]
-        
+
         left_index = self.index(self.i - 1, self.j)
         left = None
         if left_index != -1:
@@ -49,54 +49,54 @@ class Node():
             return -1
         return (i, j)
 
-   
+
     def show(self) -> List[Tuple[int, int]]:
         walls_to_draw = []
         l = 0.0
         # top wall
         if self.walls[0]:
-            start = ((self.i * WIDTH) + (WIDTH * l), (self.j * HEIGHT)) 
+            start = ((self.i * WIDTH) + (WIDTH * l), (self.j * HEIGHT))
             end   = ((self.i * WIDTH) + WIDTH - (WIDTH * l), (self.j * HEIGHT))
             walls_to_draw.append((start, end))
 
         # left wall
         if self.walls[1]:
-            start = ((self.i * WIDTH) + WIDTH , (self.j * HEIGHT) + (HEIGHT * l)) 
+            start = ((self.i * WIDTH) + WIDTH , (self.j * HEIGHT) + (HEIGHT * l))
             end   = ((self.i * WIDTH) + WIDTH, (self.j * HEIGHT) +  HEIGHT - (HEIGHT * l))
             walls_to_draw.append((start, end))
 
         # bottom wall
         if self.walls[2]:
-            start = ((self.i * WIDTH) + (WIDTH * l), (self.j * HEIGHT) + HEIGHT) 
+            start = ((self.i * WIDTH) + (WIDTH * l), (self.j * HEIGHT) + HEIGHT)
             end   = ((self.i * WIDTH) + WIDTH - (WIDTH * l), (self.j * HEIGHT) + HEIGHT)
             walls_to_draw.append((start, end))
 
         # right wall
         if self.walls[3]:
-            start = ((self.i * WIDTH) , (self.j * HEIGHT) + (HEIGHT * l)) 
+            start = ((self.i * WIDTH) , (self.j * HEIGHT) + (HEIGHT * l))
             end   = ((self.i * WIDTH), (self.j * HEIGHT) + HEIGHT - (HEIGHT * l))
             walls_to_draw.append((start, end))
-            
+
         return walls_to_draw
-    
-        
+
+
     def remove_wall(self, i, j) -> None:
         if i > self.i:
             self.walls[1] = False # remove right wall
-        elif i < self.i: 
+        elif i < self.i:
             self.walls[3] = False # remove left wall
         elif j > self.j:
             self.walls[2] = False # remove bottom wall
-        elif j < self.j: 
-            self.walls[0] = False # remove top wall 
+        elif j < self.j:
+            self.walls[0] = False # remove top wall
 
 class Stack():
     def __init__(self):
         self.stack = []
-    
+
     def add(self, obj):
         self.stack.append(obj)
-    
+
     def pop(self) -> Node:
         return self.stack.pop()
 
