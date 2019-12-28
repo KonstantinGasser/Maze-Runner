@@ -1,5 +1,6 @@
 import pygame
 from constants import COLS, ROWS, WIDTH, HEIGHT, WHITE
+from typing import List, Optional, Tuple
 
 class Node():
     def __init__(self, i, j):
@@ -9,7 +10,7 @@ class Node():
         self.neighours = []
         self.walls     = [True, True, True, True] #top , right, bottom, left
 
-    def get_neighbours(self, grid):
+    def get_neighbours(self, grid) -> List[Node]:
 
         top_index = self.index(self.i, self.j - 1)
         top = None
@@ -32,7 +33,6 @@ class Node():
             left   = grid[left_index[0]][left_index[1]]
 
 
-
         if top is not None and not top.visited:
             self.neighours.append(top)
         if right is not None and not right.visited:
@@ -44,71 +44,43 @@ class Node():
         return self.neighours
 
     @staticmethod
-    def index(i,j):
+    def index(i,j) -> Tuple[int, int]:
         if (i < 0 or j < 0 or i > COLS - 1 or j > ROWS - 1 ):
             return -1
-        return i, j
+        return (i, j)
 
-    def show_rect(self, screen, colr):
-        return pygame.draw.rect(
-                                screen,
-                                colr,
-                                [WIDTH * self.i + 3, HEIGHT * self.j + 3,WIDTH - 6 , HEIGHT - 6])
-
-    def show(self, screen):
+   
+    def show(self) -> List[Tuple[int, int]]:
+        walls_to_draw = []
         l = 0.0
         # top wall
         if self.walls[0]:
             start = ((self.i * WIDTH) + (WIDTH * l), (self.j * HEIGHT)) 
             end   = ((self.i * WIDTH) + WIDTH - (WIDTH * l), (self.j * HEIGHT))
-            pygame.draw.line(
-                                screen, 
-                                WHITE, 
-                                start, 
-                                end,
-                                2
-                            )
-        
+            walls_to_draw.append((start, end))
 
         # left wall
         if self.walls[1]:
             start = ((self.i * WIDTH) + WIDTH , (self.j * HEIGHT) + (HEIGHT * l)) 
             end   = ((self.i * WIDTH) + WIDTH, (self.j * HEIGHT) +  HEIGHT - (HEIGHT * l))
-            pygame.draw.line(
-                                screen, 
-                                WHITE, 
-                                start, 
-                                end,
-                                2
-                            )
+            walls_to_draw.append((start, end))
 
         # bottom wall
         if self.walls[2]:
             start = ((self.i * WIDTH) + (WIDTH * l), (self.j * HEIGHT) + HEIGHT) 
             end   = ((self.i * WIDTH) + WIDTH - (WIDTH * l), (self.j * HEIGHT) + HEIGHT)
-            pygame.draw.line(
-                                screen, 
-                                WHITE, 
-                                start, 
-                                end,
-                                2
-                            )
+            walls_to_draw.append((start, end))
 
         # right wall
         if self.walls[3]:
             start = ((self.i * WIDTH) , (self.j * HEIGHT) + (HEIGHT * l)) 
             end   = ((self.i * WIDTH), (self.j * HEIGHT) + HEIGHT - (HEIGHT * l))
-            pygame.draw.line(
-                                screen, 
-                                WHITE, 
-                                start, 
-                                end,
-                                2
-                            )
-        
+            walls_to_draw.append((start, end))
+            
+        return walls_to_draw
     
         
-    def remove_wall(self, i, j):
+    def remove_wall(self, i, j) -> None:
         if i > self.i:
             self.walls[1] = False # remove right wall
         elif i < self.i: 
@@ -125,9 +97,9 @@ class Stack():
     def add(self, obj):
         self.stack.append(obj)
     
-    def pop(self):
+    def pop(self) -> Node:
         return self.stack.pop()
 
-    def has_next(self):
+    def has_next(self) -> bool:
         if len(self.stack) > 0: return True
         return False

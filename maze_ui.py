@@ -5,25 +5,48 @@ import sys
 from maze import Node, Stack
 
 from typing import List, Optional, Tuple
-from constants import BLACK, WHITE, GREEN, RED, BLUE, WINDOW_SIZE, COLS, ROWS 
+from constants import BLACK, WHITE, GREEN, RED, BLUE, WINDOW_SIZE, COLS, ROWS, WIDTH, HEIGHT 
 
 print(COLS)
 CLOCK = pygame.time.Clock()
 
-def _set_up_screen() -> pygame.Surface:
-    pygame.display.set_caption('Maze your way out')
-    return pygame.display.set_mode(WINDOW_SIZE)
+class Screen():
+    def __init__(self):
+        self.screen = pygame.display.set_mode(WINDOW_SIZE)
+        self.grid   = [[Node(j, i) for i in range(ROWS)] for j in range(COLS)]
+        pygame.display.set_caption('Maze your way out')
+    
+    def show_grid_node(self, walls) -> None:
+        for wall in walls:
+            pygame.draw.line(
+                                self.screen, 
+                                WHITE, 
+                                wall[0], 
+                                wall[1],
+                                2
+                            )
 
-def _set_up_grid() -> List[List[Node]]:
-    return [[Node(j, i) for i in range(ROWS)] for j in range(COLS)]
+    def show_rect(self, i, j, colr) -> None:
+        pygame.draw.rect(
+                            self.screen,
+                            colr,
+                            [
+                                WIDTH * i,
+                                HEIGHT * j,
+                                WIDTH ,
+                                HEIGHT
+                            ]
+                        )
+
+
 
 def run() -> None:
     
-    screen                 = _set_up_screen()
+    screen                 = Screen()
+    grid                   = screen.grid
     stack                  = Stack()
 
     maze_done              = False
-    grid                   = _set_up_grid() 
     
     grid[0][0].visited     = True
 
@@ -50,15 +73,30 @@ def run() -> None:
                 current.remove_wall(choosen_one.i, choosen_one.j)
                 choosen_one.remove_wall(current.i, current.j)
                 
-                screen.fill(BLACK)
+                screen.screen.fill(BLACK)
                 for i in range(ROWS):
                     for j in range(COLS):
-                        grid[i][j].show(screen)
-
-                choosen_one.show_rect(screen, RED)
+                        walls = grid[i][j].show()
+                        screen.show_grid_node(walls)
                 
-                grid[0][0].show_rect(screen, GREEN)
-                grid[-1][-1].show_rect(screen, BLUE)
+                screen.show_rect(
+                    choosen_one.i,
+                    choosen_one.j,
+                    RED
+                )
+
+                screen.show_rect(
+                    grid[0][0].i,
+                    grid[0][0].j,
+                    GREEN
+                )
+
+                screen.show_rect(
+                    grid[-1][-1].i,
+                    grid[-1][-1].j,
+                    BLUE
+                )
+            
         CLOCK.tick(20)
         pygame.display.flip()
 
@@ -66,9 +104,3 @@ def run() -> None:
 if __name__  == '__main__':
     pygame.init()
     run()
-
-
-
-
-
-
