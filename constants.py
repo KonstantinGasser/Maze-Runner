@@ -9,8 +9,8 @@ BLUE : Tuple[int, int, int] = (0, 0, 255)
 WINDOW_WIDTH : int = 900
 WINDOW_HEIGHT: int = 800
 
-WIDTH : int = 25
-HEIGHT: int= 25
+WIDTH : int = 75
+HEIGHT: int= 75
  
 
 COLS: int = (WINDOW_WIDTH-100) // WIDTH
