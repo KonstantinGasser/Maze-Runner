@@ -1,1 +1,1 @@
-![](https://github.com/KonstantinGasser/Maze-Create-Solve/blob/master/resources/a_star.gif)
+![](https://github.com/KonstantinGasser/Maze-Create-Solve/blob/master/resources/maze-1.gif)
