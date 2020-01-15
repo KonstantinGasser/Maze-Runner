@@ -3,7 +3,7 @@ import random
 import sys
 from typing import List, Optional, Tuple
 
-from constants import BLACK, WHITE, GREEN, RED, BLUE, WINDOW_SIZE, COLS, ROWS, WIDTH, HEIGHT 
+from constants import BLACK, WHITE, GREEN, RED, BLUE, WINDOW_SIZE, COLS, ROWS, WIDTH, HEIGHT, STROK_WIDTH
 from maze import MazeCreator, Node
 from a_star_solver import AStar
 
@@ -13,7 +13,7 @@ CLOCK = pygame.time.Clock()
 class Screen():
     def __init__(self):
         self.screen = pygame.display.set_mode(WINDOW_SIZE)
-        pygame.display.set_caption('Maze your way out')
+        pygame.display.set_caption('')
         CLOCK.tick(60)
     
     def show_grid_node(self, walls) -> None:
@@ -26,6 +26,14 @@ class Screen():
                                 2
                             )
 
+    def connect_finaly_path(self, current, next):
+        pygame.draw.line(
+                            self.screen, 
+                            GREEN, 
+                            current.center_point, 
+                            next.center_point,
+                            STROK_WIDTH
+                        )
     def show_rect(self, i, j, colr) -> None:
         pygame.draw.ellipse(
                             self.screen,
@@ -67,9 +75,22 @@ def run() -> None:
     maze      = MazeCreator(screen)
     maze_grid = maze.create_maze()
     a_star    = AStar(screen, maze_grid)
-    path      = a_star.a_star()
-
-    
+    last_node = a_star.a_star()
+    while last_node.came_from:
+        screen.show_rect(
+                        last_node.i,
+                        last_node.j,
+                        GREEN
+                        )
+        if last_node.came_from:
+            screen.connect_finaly_path(
+                                        last_node,
+                                        last_node.came_from
+                                    )
+            print(f'FROM ->{last_node.i}; {last_node.j} <- TO{last_node.came_from.i}; {last_node.came_from.j}:{last_node.center_point} - {last_node.came_from.center_point}')
+            
+        screen._render_screen()
+        last_node = last_node.came_from
     while True:
         for event in pygame.event.get(): 
             if event.type == pygame.QUIT:

@@ -1,11 +1,11 @@
 import pygame
 import sys
 import time
-from scipy.spatial import distance
-from maze import Stack, Tree, TreeNode, Node
+
+from data_collections import Stack
 from typing import List
 from constants import GREEN, BLACK, RED, BLUE, WHITE
-import random
+
 
 class AStar():
     def __init__(self, screen, maze):
@@ -15,14 +15,14 @@ class AStar():
         self.grid       = maze
         self.path       = []   
     
-    def a_star(self) -> Node:
+    def a_star(self) -> None:
         grid       = self.grid
         start_node = grid[0][0]
         end_node   = grid[-1][-1]
         current = None
 
         start_node.g_score = 0
-        start_node.f_score = self.dist_euclidean((start_node.i, start_node.j), (end_node.i, end_node.j))
+        start_node.f_score = 0 #self.dist_euclidean((start_node.i, start_node.j), (end_node.i, end_node.j))
         self.open_set.add(start_node)
         
         while self.open_set.has_next():
@@ -34,13 +34,7 @@ class AStar():
             current = self.open_set.get_by_index(best_f)
 
             if current == end_node:
-                print('Done')
-                tmp = current
-                while tmp.came_from:
-                    self.screen.show_rect(tmp.i, tmp.j, GREEN)
-                    tmp = tmp.came_from
-                    self.screen._render_screen()
-                return
+                return current
             
             self.open_set.del_obj(current)
             self.closed_set.add(current)
@@ -62,29 +56,30 @@ class AStar():
                     n.f_score = n.g_score + n.h_score
                     n.came_from = current
             
-            for node in self.open_set.stack:
+            self.show_current_state(current)
+            time.sleep(0.15)
+        return -1
+            
+    
+    def show_current_state(self, current):
+        for node in self.open_set.stack:
                 self.screen.show_rect(
                         node.i,
                         node.j,
                         BLUE
                     )
-            
-            for node in self.closed_set.stack:
-                self.screen.show_rect(
-                        node.i,
-                        node.j,
-                        RED
-                    )
+        for node in self.closed_set.stack:
             self.screen.show_rect(
-                        current.i,
-                        current.j,
-                        GREEN
-                    )
-
-            self.screen._render_screen()
-            time.sleep(0.25)
-            
-            
+                    node.i,
+                    node.j,
+                    RED
+                )
+        self.screen.show_rect(
+                    current.i,
+                    current.j,
+                    GREEN
+                )
+        self.screen._render_screen()
 
     @staticmethod
     def dist_euclidean(x1_y1, x2_y2):
