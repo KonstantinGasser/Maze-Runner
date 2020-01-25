@@ -87,7 +87,7 @@ def run() -> None:
                                         last_node,
                                         last_node.came_from
                                     )
-            print(f'FROM ->{last_node.i}; {last_node.j} <- TO{last_node.came_from.i}; {last_node.came_from.j}:{last_node.center_point} - {last_node.came_from.center_point}')
+            print(f'FROM: {last_node.i}; {last_node.j}-> TO:{last_node.came_from.i}; {last_node.came_from.j}:{last_node.center_point} - {last_node.came_from.center_point}')
             
         screen._render_screen()
         last_node = last_node.came_from

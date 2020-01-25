@@ -160,26 +160,24 @@ class Stack():
     
 # not yet sure where to use it
 class TreeNode():
-    def __init__(self, f_score):
+    def __init__(self, f_score, node):
         self.value      = f_score
+        self.node_obj   = node
         self.left       = None
         self.right      = None
-        self.duplicates = []
 
-    def add_node(self, node) -> None:
-        if node:
-            if node.value < self.value:
+    def add_node(self, value, node) -> None:
+        if node and value :
+            if value < self.value:
                 if self.left is None:
-                    self.left = node
+                    self.left = TreeNode(value, node)
                 else:
-                    self.left.add_node(node)
-            elif node.value > self.value:
+                    self.left.add_node(value, node)
+            elif value > self.value:
                 if self.right is None:
-                    self.right = node
+                    self.right = TreeNode(value, node)
                 else:
-                    self.right.add_node(node)
-            elif node.value == self.value:
-                self.duplicates.append(node)
+                    self.right.add_node(value, node)
     
     def delete_node(self, root, obj):
         if not root: return root
@@ -206,15 +204,15 @@ class TreeNode():
                 self.left.search_obj(obj)
         elif obj > self.value:
             if self.right is None:
-                return False
+                return None
             else: 
                 self.right.search_obj(obj)
         else:
-            return True
+            return self.node
     
     def get_lowest_value(self, node=None):
         if not node.left:
-            return node.value
+            return node
         return node.get_lowest_value(node.left)
     
     def print_tree(self):
@@ -223,4 +221,6 @@ class TreeNode():
         print(self.value)
         if self.right:
             self.right.print_tree()
-
+    
+    def get_tree_size(self, count_left, count_right):
+        pass
